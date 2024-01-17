@@ -1,0 +1,45 @@
+import json
+import logging
+
+# Configure the logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def lambda_handler(event, context):
+    # Log the full event object
+    logger.info('Received event: %s', json.dumps(event))
+    
+    # Extract the contact attributes
+    attributes = event['Details']['ContactData']['Attributes']
+
+    # Set default values for each attribute, handling missing or empty values
+    forename = attributes.get('forename', 'Unknown') if attributes.get('forename') else 'Unknown'
+    surname = attributes.get('surname', 'Unknown') if attributes.get('surname') else 'Unknown'
+    email = attributes.get('email', 'Unknown') if attributes.get('email') else 'Unknown'
+    pfNumber = attributes.get('pfNumber', 'Unknown') if attributes.get('pfNumber') else 'Unknown'
+    isAgeVerified = attributes.get('isAgeVerified', 'Unknown') if attributes.get('isAgeVerified') else 'Unknown'
+    pageID = attributes.get('pageID', 'Unknown') if attributes.get('pageID') else 'Unknown'
+    sourcePlatform = attributes.get('sourcePlatform', 'Unknown') if attributes.get('sourcePlatform') else 'Unknown'
+    
+    # Prepare the response
+    response = {
+        "forename": forename,
+        "surname": surname,
+        "email": email,
+        "pfNumber": pfNumber,
+        "isAgeVerified": isAgeVerified,
+        "pageID": pageID,
+        "sourcePlatform": sourcePlatform
+    }
+    
+    logger.info('Response to Amazon Connect: %s', response)
+
+    # Return the response to Amazon Connect
+    return response
+
+# Test the function with a mock event if running locally
+if __name__ == "__main__":
+    mock_event = {
+        # Replace with the actual event structure you received
+    }
+    print(lambda_handler(mock_event, None))
